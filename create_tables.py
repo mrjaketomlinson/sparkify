@@ -1,15 +1,27 @@
 import psycopg2
+import json
 from sql_queries import create_table_queries, drop_table_queries
 
 
-def create_database():
+def get_credentials():
     """
+    Returns a dictionary with the username and password from json file to
+    connect to PostgreSQL Database
+    """
+    with open('credentials.json') as f:
+        creds = json.load(f)
+    return creds
+
+
+def create_database(creds):
+    """
+    - creds (dictionary): includes username and password from get_credentials function
     - Creates and connects to the sparkifydb
     - Returns the connection and cursor to sparkifydb
     """
     
     # connect to default database
-    conn = psycopg2.connect("host=127.0.0.1 dbname=studentdb user=student password=student")
+    conn = psycopg2.connect(f'host=localhost dbname=udacity user={creds["username"]} password={creds["password"]}')
     conn.set_session(autocommit=True)
     cur = conn.cursor()
     
@@ -21,7 +33,7 @@ def create_database():
     conn.close()    
     
     # connect to sparkify database
-    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
+    conn = psycopg2.connect(f'host=localhost dbname=sparkifydb user={creds["username"]} password={creds["password"]}')
     cur = conn.cursor()
     
     return cur, conn
@@ -47,6 +59,8 @@ def create_tables(cur, conn):
 
 def main():
     """
+    - Gets credentials for database
+    
     - Drops (if exists) and Creates the sparkify database. 
     
     - Establishes connection with the sparkify database and gets
@@ -58,7 +72,8 @@ def main():
     
     - Finally, closes the connection. 
     """
-    cur, conn = create_database()
+    creds = get_credentials()
+    cur, conn = create_database(creds)
     
     drop_tables(cur, conn)
     create_tables(cur, conn)
