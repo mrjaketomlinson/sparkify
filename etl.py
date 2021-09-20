@@ -8,6 +8,17 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """
+    Description: This function is responsible for processing song_file data. The
+    function inserts records into the songs and artists tables.
+    
+    Arguments:
+        cur: The cursor object to the database
+        filepath: The song_file filepath to be processed.
+        
+    Returns:
+        None
+    """
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -21,12 +32,25 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    """
+    Description: This function is responsible for processing log_file data. The 
+    function filters the data in the file, and adds records to the time, users,
+    and songplays table.
+    
+    Arguments:
+        cur: The cursor object to the database.
+        filepath: The log_file filepath to be processed.
+    
+    Returns:
+        None
+    """
     # open log file
     df = pd.read_json(filepath, lines=True)
 
     # filter by NextSong action
     df = df[df['page'] == 'NextSong']
     df['ts_datetime'] = df['ts'].apply(lambda x: datetime.datetime.fromtimestamp(x/1000.0))
+    df['userId'] = df['userId'].apply(lambda x: int(x))
 
     # convert timestamp column to datetime
     t = df['ts_datetime']
@@ -71,6 +95,20 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+    """
+    Description: This function is responsible for listing the files in a directory,
+    and then executing the ingest process for each file according to the function
+    that performs the transformation to save it to the database.
+
+    Arguments:
+        cur: the cursor object.
+        conn: connection to the database.
+        filepath: log data or song data file path.
+        func: function that transforms the data and inserts it into the database.
+
+    Returns:
+        None
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -90,6 +128,16 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """
+    Description: Connects to the database. Processes all data in the song_data
+    folder. Processes all data in the log_data folder. Closes the connection.
+    
+    Arguments:
+        None
+    
+    Returns:
+        None
+    """
     creds = get_credentials()
     conn = psycopg2.connect(f'host=localhost dbname=sparkifydb user={creds["username"]} password={creds["password"]}')
     cur = conn.cursor()

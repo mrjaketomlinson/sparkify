@@ -5,8 +5,14 @@ from sql_queries import create_table_queries, drop_table_queries
 
 def get_credentials():
     """
-    Returns a dictionary with the username and password from json file to
-    connect to PostgreSQL Database
+    Description: Gets database credentials from the json file in the project 
+    used to login to the local Postgres database.
+    
+    Arguments:
+        None
+    
+    Returns:
+        creds: Dictionary with the username and password from the jason file.
     """
     with open('credentials.json') as f:
         creds = json.load(f)
@@ -15,9 +21,17 @@ def get_credentials():
 
 def create_database(creds):
     """
-    - creds (dictionary): includes username and password from get_credentials function
-    - Creates and connects to the sparkifydb
-    - Returns the connection and cursor to sparkifydb
+    Description: This function drops the sparify database if it exists and
+    creates a fresh version of the database. It returns the cursor and
+    connection object to the database.
+    
+    Arguments: 
+        creds: A dictionary with two values, username and password, used to log
+            in to the database.
+    
+    Returns:
+        cur: The cursor object to the database.
+        conn: The connection object to the database.
     """
     
     # connect to default database
@@ -41,7 +55,14 @@ def create_database(creds):
 
 def drop_tables(cur, conn):
     """
-    Drops each table using the queries in `drop_table_queries` list.
+    Description: Drops each table using the queries in `drop_table_queries` list.
+    
+    Arguments:
+        cur: The cursor object to the database.
+        conn: The connection object to the database.
+    
+    Returns:
+        None
     """
     for query in drop_table_queries:
         cur.execute(query)
@@ -50,7 +71,14 @@ def drop_tables(cur, conn):
 
 def create_tables(cur, conn):
     """
-    Creates each table using the queries in `create_table_queries` list. 
+    Description: Creates each table using the queries in `create_table_queries` list.
+    
+    Arguments:
+        cur: The cursor object to the database.
+        conn: The connection object to the database.
+    
+    Returns:
+        None
     """
     for query in create_table_queries:
         cur.execute(query)
@@ -59,18 +87,16 @@ def create_tables(cur, conn):
 
 def main():
     """
-    - Gets credentials for database
+    Description: Gets credentials for database, drops (if exists) and creates 
+    the sparkify database. Establishes connection with the sparkify database and
+    gets cursor to it. Drops all the tables. Creates all tables needed. Finally,
+    closes the connection. 
     
-    - Drops (if exists) and Creates the sparkify database. 
+    Arguments:
+        None
     
-    - Establishes connection with the sparkify database and gets
-    cursor to it.  
-    
-    - Drops all the tables.  
-    
-    - Creates all tables needed. 
-    
-    - Finally, closes the connection. 
+    Returns:
+        None
     """
     creds = get_credentials()
     cur, conn = create_database(creds)

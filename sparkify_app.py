@@ -32,8 +32,20 @@ expander_bar.markdown("""
 * **Project on Github**: [Sparkify](https://github.com/mrjaketomlinson/sparkify).
 """)
 
+
 # load_data helping functions
 def process_song_file(filepath):
+    """
+    Description: This function is responsible for processing song_file data. The
+    function creates a song table and artist table.
+    
+    Arguments:
+        filepath: The song_file filepath to be processed.
+        
+    Returns:
+        song_data: A dataframe of song data.
+        artist_data: A dataframe of artist data.
+    """
     # open song file
     df = pd.read_json(filepath, lines=True)
     # song_df
@@ -45,6 +57,22 @@ def process_song_file(filepath):
 
 
 def process_log_file(filepath, song_data, artist_data):
+    """
+    Description: This function is responsible for processing log_file data. The 
+    function filters the data in the file, and adds records to the time, users,
+    and songplays table.
+    
+    Arguments:
+        filepath: The log_file filepath to be processed.
+        song_data: The songs pandas dataframe.
+        artist_data: the artists pandas dataframe.
+    
+    Returns:
+        time_df: The time table extracted from this file.
+        user_df: The user table extracted from this file.
+        songplay_df: The songplay table extracted from this file, merged with
+            the song and artist tables.
+    """
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -98,6 +126,16 @@ def process_log_file(filepath, song_data, artist_data):
 
 
 def get_files(filepath):
+    """
+    Description: This function gets the paths of all of the files in the 
+    specified filepath.
+    
+    Arguments:
+        filepath: A folder path to traverse.
+    
+    Returns:
+        all_files: A list of files in the filepath.
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -112,7 +150,19 @@ def get_files(filepath):
 @st.cache
 def load_data():
     """
-    Loops through the data files and returns all of the dataframes for this project
+    Description: The function loads all of the data from the data files in the
+    project by looping through the files and appending it to their respective
+    dataframes.
+    
+    Arguments:
+        None
+    
+    Returns:
+        songs: A dataframe of songs.
+        artists: A dataframe of artists.
+        users: A dataframe of users.
+        time: A dataframe of time.
+        songplays: A dataframe of songplays.
     """
     # Instantialize data frames
     songs = pd.DataFrame()
@@ -147,7 +197,16 @@ col1, col2 = st.columns((2,1))
 
 # col1
 def add_labels(x, y):
-    """Add labels to the plot"""
+    """
+    Description: This function adds data labels to the active matplotlib figure.
+    
+    Arguments:
+        x: The x axis values.
+        y: The y axis values.
+
+    Returns:
+        None
+    """
     for i in range(len(x)):
         plt.text(i, y[i], y[i], horizontalalignment='center')
 

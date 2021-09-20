@@ -20,3 +20,7 @@ Sparkify, a pretend startup, wants to analyze data on their music streaming app.
 - **etl.py** -- Reads and processes files from the song_data and log_data folders and loads them into the database tables.
 - **sql_queries.py** -- Contains all SQL queries for the project.
 - **test.ipynb** -- Helper file to query the database after the tables are created and data is inserted.
+
+## ERD of the database created in this project
+
+![Sparkify ERD](SparkifyERD.png)
